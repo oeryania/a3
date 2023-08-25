@@ -22,7 +22,9 @@ best <- function(state, outcome) {
         }
     )
     suppressWarnings(outcomeData <- as.numeric(outcomeForState))
-    max(outcomeData, na.rm = TRUE)
+    bestOutcome <- min(outcomeData, na.rm = TRUE)
+    res <- subset(outcomesForState, outcomesForState[varName] == bestOutcome)
+    res$Hospital.Name
 }
 
 varSuffix <- function(x) {
