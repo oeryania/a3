@@ -13,7 +13,7 @@ plot.outcome.hist <- function(outcome) hist(outcomeData[, outcome])
 hospital.ranks <- function(state, outcome) {
     stopifnot("invalid state" = state %in% outcome.data$State)
     stopifnot("invalid outcome" = outcome %in% names(outcome.data))
-    outcomeDataFilteredOrdered <- outcomeData %>%
+    outcomeData %>%
         subset(State == state) %>%
         select(Hospital.Name, as.character(outcome)) %>%
         na.omit %>%
@@ -26,5 +26,7 @@ best <- function(state, outcome) {
 }
 
 rankhospital <- function(state, outcome, num = "best") {
-    subset(hospital.ranks(state, outcome), Rank == num)
+    hospitalRanks <- hospital.ranks(state, outcome)
+    if (is.character(num)) num <- switch(num, "best" = 1, "worst" = nrow(hospitalRanks))
+    subset(hospitalRanks, Rank == num)
 }
