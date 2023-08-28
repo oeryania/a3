@@ -27,6 +27,8 @@ best <- function(state, outcome) {
 
 rankhospital <- function(state, outcome, num = "best") {
     hospitalRanks <- hospital.ranks(state, outcome)
-    if (is.character(num)) num <- switch(num, "best" = 1, "worst" = nrow(hospitalRanks))
+    nrows <- nrow(hospitalRanks)
+    if (is.character(num)) num <- switch(num, "best" = 1, "worst" = nrows)
+    if(num > nrows) return(NA)
     subset(hospitalRanks, Rank == num)
 }
