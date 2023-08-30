@@ -89,7 +89,7 @@ rankhospital <- function(state, outcome, num = "best") {
     filter(hospitalRanks, Rank == num)$Hospital.Name
 }
 
-# ANSWER 4 | input: hospital outcome, rank | output: list of all states, along with the hospital name with in that state with given rank
+# ANSWER 4 | input: outcome, rank | output: list of all states, along with the hospital name with in that state with given rank
 rankall <- function(outcome, num = "best") {
     validate.outcome(outcome)
 
