@@ -42,7 +42,7 @@ rankhospital <- function(state, outcome, num = "best") {
     subset(hospitalRanks, Rank == num)
 }
 
-get.hospital.name <- function(myState, myRank, myData) {
+find.hospital.by.rank <- function(myState, myRank, myData) {
     stateHospitals <- filter(myData, State == myState)
     if (is.character(myRank)) myRank <- switch(myRank, "best" = 1, "worst" = nrow(stateHospitals))
     hospitalName <- filter(stateHospitals, Rank == myRank)$Hospital.Name
@@ -60,6 +60,9 @@ rankall <- function(outcome, num = "best") {
         mutate(Rank = row_number()) %>%
         ungroup()
     
-    cbind(hospital = sapply(states, get.hospital.name, num, outcomeData2), state = states) %>% as.data.frame
+    cbind(
+        hospital = sapply(states, find.hospital.by.rank, num, outcomeData2),
+        state = states
+        ) %>% as.data.frame
         
 }
