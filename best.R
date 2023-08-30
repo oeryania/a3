@@ -2,22 +2,22 @@
 #
 # Download the file ProgAssignment3-data.zip from:
 # https://d396qusza40orc.cloudfront.net/rprog%2Fdata%2FProgAssignment3-data.zip
-# containing the data for. The data for this assignment come from the Hospital
-# Compare web site (http://hospitalcompare.hhs.gov) run by the U.S. Department
-# of Health and Human Services. The purpose of the web site is to provide data
-# and information about the quality of care at over 4,000 Medicare-certified
-# hospitals in the U.S. This dataset essentially covers all major U.S.
-# hospitals. This dataset is used for a variety of purposes, including
-# determining whether hospitals should be fined for not providing high quality
-# care to patients (see http://goo.gl/jAXFX for some background on this
-# particular topic). The Hospital Compare web site contains a lot of data and we
-# will only look at a small subset for this assignment. The zip file for this
-# assignment contains three files • outcome-of-care-measures.csv: Contains
-# information about 30-day mortality and readmission rates for heart attacks,
-# heart failure, and pneumonia for over 4,000 hospitals. • hospital-data.csv:
-# Contains information about each hospital. • Hospital_Revised_Flatfiles.pdf:
-# Descriptions of the variables in each file (i.e the code book). A description
-# of the variables in each of the files is in the included PDF file named
+# The data for this assignment come from the Hospital Compare web site
+# (http://hospitalcompare.hhs.gov) run by the U.S. Department of Health and
+# Human Services. The purpose of the web site is to provide data and information
+# about the quality of care at over 4,000 Medicare-certified hospitals in the
+# U.S. This dataset essentially covers all major U.S. hospitals. This dataset is
+# used for a variety of purposes, including determining whether hospitals should
+# be fined for not providing high quality care to patients (see
+# http://goo.gl/jAXFX for some background on this particular topic). The
+# Hospital Compare web site contains a lot of data and we will only look at a
+# small subset for this assignment. The zip file for this assignment contains
+# three files • outcome-of-care-measures.csv: Contains information about 30-day
+# mortality and readmission rates for heart attacks, heart failure, and
+# pneumonia for over 4,000 hospitals. • hospital-data.csv: Contains information
+# about each hospital. • Hospital_Revised_Flatfiles.pdf: Descriptions of the
+# variables in each file (i.e the code book). A description of the variables in
+# each of the files is in the included PDF file named
 # Hospital_Revised_Flatfiles.pdf. This document contains information about many
 # other files that are not included with this programming assignment. You will
 # want to focus on the variables for Number 19 (“Outcome of Care Measures.csv”)
@@ -25,20 +25,20 @@
 
 library(dplyr)
 
-# intilize data by reading outcome-of-care-measures.csv (downloaded from https://d396qusza40orc.cloudfront.net/rprog%2Fdata%2FProgAssignment3-data.zip)
+############################## INITIALIZE DATA #################################
+
+# intilize outcome data from csv, selecting only the relevant columns
 outcome.data <- read.csv("outcome-of-care-measures.csv", colClasses = "character") %>%
                     mutate(State, Hospital.Name,
-                      # hospital outcomes that we care about
                       "heart attack" = suppressWarnings(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack)),
                       "heart failure" = suppressWarnings(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure)),
                       "pneumonia" = suppressWarnings(as.numeric(Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia)),
                       .keep = "none") # drop all other columns
 
-# input: outcome | output: histogram for specified outcome
-plot.outcome.hist <- function(outcome) hist(outcome.data[, outcome])
-
 # input: none | output: list of all states, sorted alphabetically
 states <- outcome.data$State %>% unique %>% sort
+
+############################## HELPER FUNCTIONS ################################
 
 # input: state | output: error if state is not in data
 validate.state <- function(state) stopifnot("invalid state" = state %in% states)
@@ -67,12 +67,17 @@ find.hospital.by.rank <- function(myState, myRank, myData) {
     if(length(hospitalName) == 0) NA else hospitalName
 }
 
-# input: state, outcome | output: best hospital for input
+########################### ASSIGNMENT FUNCTIONS ###############################
+
+# ANSWER 1 | input: outcome | output: histogram for specified outcome
+plot.outcome.hist <- function(outcome) hist(outcome.data[, outcome])
+
+# ANSWER 2 | input: state, outcome | output: best hospital for input
 best <- function(state, outcome) {
     hospital.ranks(state, outcome)[1, 1]
 }
 
-# input: state, outcome, rank | output: hospital name for specified input
+# ANSWER 3 | input: state, outcome, rank | output: hospital name for specified input
 rankhospital <- function(state, outcome, num = "best") {
     hospitalRanks <- hospital.ranks(state, outcome)
     
@@ -84,7 +89,7 @@ rankhospital <- function(state, outcome, num = "best") {
     filter(hospitalRanks, Rank == num)$Hospital.Name
 }
 
-# input: hospital outcome, rank | output: list of all states, along with the hospital name with in that state with given rank
+# ANSWER 4 | input: hospital outcome, rank | output: list of all states, along with the hospital name with in that state with given rank
 rankall <- function(outcome, num = "best") {
     validate.outcome(outcome)
 
