@@ -46,7 +46,7 @@ validate.state <- function(state) stopifnot("invalid state" = state %in% states)
 # input: outcome | output: error if outcome is not in data
 validate.outcome <- function(outcome) stopifnot("invalid outcome" = outcome %in% names(outcome.data))
 
-# input: state, outcome | output: list of all hospitals and their rankings for input
+# input: state, outcome | output: hospitals for input with their rank
 hospital.ranks <- function(state, outcome) {
     validate.state(state)
     validate.outcome(outcome)
@@ -59,7 +59,7 @@ hospital.ranks <- function(state, outcome) {
         mutate(Rank = row_number())
 }
 
-# input: state, rank, data with state, hospital name, and rank | output: hospital name with the specified ranking for a given state
+# input: state, rank, data with state, hospital, rank | output: hospital name for input
 find.hospital.by.rank <- function(myState, myRank, myData) {
     stateHospitals <- filter(myData, State == myState)
     if (is.character(myRank)) myRank <- switch(myRank, "best" = 1, "worst" = nrow(stateHospitals))
@@ -69,7 +69,7 @@ find.hospital.by.rank <- function(myState, myRank, myData) {
 
 ########################### ASSIGNMENT FUNCTIONS ###############################
 
-# ANSWER 1 | input: outcome | output: histogram for specified outcome
+# ANSWER 1 | input: outcome | output: histogram for input
 plot.outcome.hist <- function(outcome) hist(outcome.data[, outcome])
 
 # ANSWER 2 | input: state, outcome | output: best hospital for input
@@ -77,7 +77,7 @@ best <- function(state, outcome) {
     hospital.ranks(state, outcome)[1, 1]
 }
 
-# ANSWER 3 | input: state, outcome, rank | output: hospital name for specified input
+# ANSWER 3 | input: state, outcome, rank | output: hospital name for input
 rankhospital <- function(state, outcome, num = "best") {
     hospitalRanks <- hospital.ranks(state, outcome)
     
@@ -89,7 +89,7 @@ rankhospital <- function(state, outcome, num = "best") {
     filter(hospitalRanks, Rank == num)$Hospital.Name
 }
 
-# ANSWER 4 | input: outcome, rank | output: list of all states, along with the hospital name with in that state with given rank
+# ANSWER 4 | input: outcome, rank | output: state and hospital name for input
 rankall <- function(outcome, num = "best") {
     validate.outcome(outcome)
 
